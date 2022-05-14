@@ -15,7 +15,11 @@ const notificationSchema = new mongoose.Schema({
     },
     checkInterval: {
         type: Number,
-        require: true
+        default: 43200
+    },
+    lastCheck: {
+        type: Date,
+        default: Date.now()
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,

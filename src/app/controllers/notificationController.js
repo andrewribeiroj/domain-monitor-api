@@ -83,4 +83,5 @@ router.delete('/:notificationId', async (req, res) => {
     }
 })
 
+// Export
 module.exports = app => app.use('/notifications', router)

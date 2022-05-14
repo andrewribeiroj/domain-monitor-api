@@ -22,8 +22,16 @@ app.get('/', (req,res) => {
     return res.send({ message: 'Successfully connected!' })
 })
 
-// Auth
+// Controllers
 require('./app/controllers/index')(app)
 
+// Crons
+// const checkAvailability = require('./app/crons/checkAvailability')
+const CronManager = require('./app/crons/CronManager')
+
 // Serve
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`))
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`)
+
+    //CronManager.run()
+})
