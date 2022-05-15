@@ -33,5 +33,5 @@ const CronManager = require('./app/crons/CronManager')
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`)
 
-    //CronManager.run()
+    CronManager.run()
 })

@@ -21,10 +21,11 @@ router.get('/:domain?', async (req, res) => {
         
         var resWhois = await whois(`${domain}`, {follow: 3, verbose: true});
 
-        console.log(resWhois.length)
-
         if(resWhois.length < 2)
-            return res.send({ message: 'Possibly not registered'})
+            return res.send({
+                message: 'Possibly not registered',
+                availability: true
+            })
 
         const domainStatuses = []
 
@@ -32,7 +33,7 @@ router.get('/:domain?', async (req, res) => {
             var statusPart = element.data.domainStatus.toLowerCase().split(" ")
 
             statusPart.forEach(element => {
-                if(element.startsWith('http') === false)
+                if(element.startsWith('http') === false && element.startsWith('(http') === false)
                     if(domainStatuses.indexOf(element) === -1)
                         domainStatuses.push(element)
             })
@@ -40,7 +41,8 @@ router.get('/:domain?', async (req, res) => {
 
         return res.send({
             message: 'Currently registered',
-            results: domainStatuses
+            availability: false,
+            statuses: domainStatuses
         })
     } catch (err) {
         console.log(err)
