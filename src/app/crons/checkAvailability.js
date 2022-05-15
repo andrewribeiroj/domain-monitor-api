@@ -1,42 +1,8 @@
 const cron = require('node-cron')
-const whois = require('whois-json')
 const mailer = require('../../modules/mailer')
+const whoisFunction = require('../functions/whoisFunction')
 
 const Notification = require('../models/Notification')
-
-async function whoisFunction(domain) {
-    try {
-        
-        var resWhois = await whois(`${domain}`, {follow: 3, verbose: true});
-
-        if(resWhois.length < 2)
-            return ({
-                message: 'Possibly not registered',
-                availability: true
-            })
-
-        const domainStatuses = []
-
-        resWhois.forEach(element => {
-            var statusPart = element.data.domainStatus.toLowerCase().split(" ")
-
-            statusPart.forEach(element => {
-                if(element.startsWith('http') === false && element.startsWith('(http') === false)
-                    if(domainStatuses.indexOf(element) === -1)
-                        domainStatuses.push(element)
-            })
-        })
-
-        return ({
-            message: 'Currently registered',
-            availability: false,
-            statuses: domainStatuses
-        })
-    } catch (err) {
-        console.log(err)
-        return ({ error: 'Something went wrong' })
-    }
-}
 
 async function checkAvailability() {
 
@@ -46,6 +12,7 @@ async function checkAvailability() {
 
         notifications.forEach(async element => {
             var domain = element.domain
+            console.log(domain)
             var result = await whoisFunction(domain)
 
             if (result.availability === true){

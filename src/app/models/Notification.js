@@ -5,14 +5,18 @@ const notificationSchema = new mongoose.Schema({
         type: String,
         require: true
     },
+    registrationDate: {
+        type: Date,
+        require: true
+    },
     expirationDate: {
         type: Date,
         require: true
     },
-    startDate: {
-        type: Date,
-        require: true
-    },
+    statuses: [{
+        type: String,
+        require: false
+    }],
     checkInterval: {
         type: Number,
         default: 43200
