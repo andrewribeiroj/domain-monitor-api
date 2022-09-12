@@ -39,6 +39,9 @@ async function checkAvailability() {
             }
         })
 
+        // const db_content = await Notification.find().populate('user')
+        // console.log(db_content)
+
     } catch (err) {
         console.log(err)
     }
@@ -46,5 +49,5 @@ async function checkAvailability() {
 }
 
 module.exports = cron.schedule('*/5 * * * * *', checkAvailability, {
-    scheduled: false
+    scheduled: true
 })
