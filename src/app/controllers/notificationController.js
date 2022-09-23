@@ -1,16 +1,17 @@
 // Require Packages
 const express = require('express')
 const router = express.Router()
+const whoisFunction = require('../functions/whoisFunction')
 
 const Notification = require('../models/Notification')
 
 // Middleware
 const authMiddleware = require('../middlewares/auth')
-router.use(authMiddleware)
+// router.use(authMiddleware)
 
 // List
-router.get('/', async (req,res) => {
-    try{
+router.get('/', async (req, res) => {
+    try {
 
         const notifications = await Notification.find().populate('user')
 
@@ -23,20 +24,35 @@ router.get('/', async (req,res) => {
 
 // Create
 router.post('/', async (req, res) => {
-    try{
+    try {
 
-        const notification = await Notification.create({ ...req.body, user: req.userId })
+        const { domain } = req.body
 
-        return res.send( notification )
+        const verified = await whoisFunction(domain)
+
+        if (verified.availability === true) {
+            res.send(verified)
+        } else {
+
+            const notification = await Notification.create({ 
+                ...verified,
+                checkInterval: req.body.checkInterval,
+                user: req.userId 
+            })
+
+            return res.send(notification)
+
+        }
 
     } catch (err) {
+        console.log(err)
         return res.status(400).send({ error: 'Cannot create notification' })
     }
 })
 
 // Read
 router.get('/:notificationId', async (req, res) => {
-    try{
+    try {
 
         const notifications = await Notification.findById(req.params.notificationId).populate('user')
 
@@ -49,7 +65,7 @@ router.get('/:notificationId', async (req, res) => {
 
 // Update
 router.put('/:notificationId', async (req, res) => {
-    try{
+    try {
 
         const { domain, expirationDate, startDate, checkInterval, completed } = req.body
 
@@ -63,7 +79,7 @@ router.put('/:notificationId', async (req, res) => {
 
         await notification.save()
 
-        return res.send( notification )
+        return res.send(notification)
 
     } catch (err) {
         return res.status(400).send({ error: 'Cannot find notification' })
@@ -72,7 +88,7 @@ router.put('/:notificationId', async (req, res) => {
 
 // Delete
 router.delete('/:notificationId', async (req, res) => {
-    try{
+    try {
 
         await Notification.findByIdAndRemove(req.params.notificationId).populate('user')
 

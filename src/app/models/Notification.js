@@ -5,6 +5,10 @@ const notificationSchema = new mongoose.Schema({
         type: String,
         require: true
     },
+    registrar: {
+        type: String,
+        require: true
+    },
     registrationDate: {
         type: Date,
         require: true

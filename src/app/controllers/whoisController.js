@@ -1,5 +1,7 @@
 // Require Packages
 const whois = require('whois-json')
+const whoisFunction = require('../functions/whoisFunction')
+const dig = require('../functions/digFunction')
 
 const express = require('express');
 const { send } = require('express/lib/response');
@@ -9,44 +11,64 @@ const router = express.Router()
 router.get('/favicon.ico', (req, res) => res.status(204));
 
 // Read
-router.get('/:domain?', async (req, res) => {
-    try {
-        
-        const { domain } = req.params
+router.get('/:domain?/:fulldata?', async (req, res) => {
+    if (req.params.fulldata === 'fulldata') {
 
-        if(typeof domain === 'undefined')
-            return res.send({ error: 'No domain received' })
-        
-        console.log(`Analyzing ${domain}`)
-        
-        var resWhois = await whois(`${domain}`, {follow: 3, verbose: true});
+        try {
 
-        if(resWhois.length < 2)
+            const { domain } = req.params
+
+            if (typeof domain === 'undefined')
+                return res.send({ error: 'No domain received' })
+
+            console.log(`Analyzing ${domain}`)
+
+            var resWhois = await whois(`${domain}`, { follow: 3, verbose: true });
+
             return res.send({
-                message: 'Possibly not registered',
-                availability: true
+                resWhois
             })
 
-        const domainStatuses = []
+        } catch (err) {
+            console.log(err)
+            return res.status(400).send({ error: 'Something went wrong' })
+        }
 
-        resWhois.forEach(element => {
-            var statusPart = element.data.domainStatus.toLowerCase().split(" ")
+    } else {
 
-            statusPart.forEach(element => {
-                if(element.startsWith('http') === false && element.startsWith('(http') === false)
-                    if(domainStatuses.indexOf(element) === -1)
-                        domainStatuses.push(element)
+        try {
+
+            const { domain } = req.params
+
+            if (typeof domain === 'undefined')
+                return res.send({ error: 'No domain received' })
+
+            console.log(`Analyzing ${domain}`)
+
+            var {
+                    message,
+                    availability,
+                    registrar,
+                    registration,
+                    expiration,
+                    statuses,
+                    nameservers
+                } = await whoisFunction(domain)
+
+            return res.send({
+                message,
+                availability,
+                registrar,
+                registration,
+                expiration,
+                statuses,
+                nameservers
             })
-        })
+        } catch (err) {
+            console.log(err)
+            return res.status(400).send({ error: 'Something went wrong' })
+        }
 
-        return res.send({
-            message: 'Currently registered',
-            availability: false,
-            statuses: domainStatuses
-        })
-    } catch (err) {
-        console.log(err)
-        return res.status(400).send({ error: 'Something went wrong' })
     }
 })
 
