@@ -1,8 +1,7 @@
 const cron = require('node-cron')
 const mailer = require('../../modules/mailer')
 const whoisFunction = require('../functions/whoisFunction')
-
-const mysqlApi = require('../apis/mysqlApi');
+const mysqlDomain = require('../functions/mysqlDomain')
 
 const Notification = require('../models/Notification')
 
@@ -14,7 +13,7 @@ async function checkAvailability() {
 
         notifications.forEach(async element => {
             var domain = element.domain
-            // console.log(domain)
+            // console.log(element)
             var result = await whoisFunction(domain)
 
             if (result.availability === true) {
@@ -44,16 +43,7 @@ async function checkAvailability() {
                 }
             }
 
-            console.log(element._id)
-
-            mysqlApi.get('/domains').then(resp => {
-            
-                resp.data.data.filter(function (chain) {
-                    if(element._id.equals(chain.mongoId))
-                        console.log('AAAAAAAAAAA', chain)
-                });
-    
-            });
+            mysqlDomain(element, domain)
 
         })
 
