@@ -1,5 +1,5 @@
 // Availability Checker
-const checkAvailability = require('./checkAvailability')
+const checkAvailability = require('./mainCron')
 
 class CronManager {
     constructor(){

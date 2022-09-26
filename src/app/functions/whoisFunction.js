@@ -7,9 +7,9 @@ async function whoisFunction(domain, callback) {
             return ({ error: 'No domain received' })
 
         if (domain.includes(".com.br"))
-            return ({ error: 'TLD is not supported'})
+            return ({ error: 'TLD is not supported' })
 
-        console.log(`Analyzing ${domain}`)
+        //console.log(`Analyzing ${domain}`)
 
         var resWhois = await whois(`${domain}`, { follow: 3, verbose: true });
 
@@ -48,8 +48,8 @@ async function whoisFunction(domain, callback) {
             message: 'Currently registered',
             availability: false,
             registrar: resWhois[0].data.registrar,
-            registrationDate: resWhois[0].data.creationDate,
-            expirationDate: resWhois[0].data.registryExpiryDate,
+            registrationDate: resWhois[0].data.creationDate.replace(/T/, ' ').replace(/\..+/, ''),
+            expirationDate: resWhois[0].data.registryExpiryDate.replace(/T/, ' ').replace(/\..+/, ''),
             statuses: domainStatuses,
             nameservers: nameservers,
             dnnssec: resWhois[0].data.dnssec

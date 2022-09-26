@@ -21,7 +21,7 @@ router.get('/:domain?/:fulldata?', async (req, res) => {
             if (typeof domain === 'undefined')
                 return res.send({ error: 'No domain received' })
 
-            console.log(`Analyzing ${domain}`)
+            //console.log(`Analyzing ${domain}`)
 
             var resWhois = await whois(`${domain}`, { follow: 3, verbose: true });
 
@@ -43,14 +43,14 @@ router.get('/:domain?/:fulldata?', async (req, res) => {
             if (typeof domain === 'undefined')
                 return res.send({ error: 'No domain received' })
 
-            console.log(`Analyzing ${domain}`)
+            //console.log(`Analyzing ${domain}`)
 
             var {
                     message,
                     availability,
                     registrar,
-                    registration,
-                    expiration,
+                    registrationDate,
+                    expirationDate,
                     statuses,
                     nameservers
                 } = await whoisFunction(domain)
@@ -59,8 +59,8 @@ router.get('/:domain?/:fulldata?', async (req, res) => {
                 message,
                 availability,
                 registrar,
-                registration,
-                expiration,
+                registrationDate,
+                expirationDate,
                 statuses,
                 nameservers
             })
