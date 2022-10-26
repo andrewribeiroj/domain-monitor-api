@@ -1,6 +1,8 @@
 // DOTENV
 require('dotenv').config()
 const PORT = process.env.PORT
+const HOST = process.env.HOST
+
 
 // EXPRESS
 const express = require('express')
@@ -31,7 +33,7 @@ const CronManager = require('./app/crons/CronManager')
 
 // Serve
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`)
+    console.log(`Server running on http://${HOST}:${PORT}`)
 
     //CronManager.run()
 })
