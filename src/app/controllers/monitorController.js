@@ -12,8 +12,8 @@ router.get('/favicon.ico', (req, res) => res.status(204));
 // Read
 router.get('/:domain?/:type?', async (req, res) => {
 
-    if (req.params.domain.includes(".br"))
-        return res.status(403).send({ error: 'TLD is not supported' })
+//    if (req.params.domain.includes(".br"))
+//        return res.status(403).send({ error: 'TLD is not supported' })
 
     try {
 

@@ -1,0 +1,8 @@
+{
+    "0": "No Error",
+    "1": "Format Error",
+    "2": "Server Failure",
+    "3": "Non-Existent Domain or DNS Record",
+    "4": "Not Implemented",
+    "5": "Query Refused"
+}

@@ -1,15 +1,19 @@
 // Require Packages
 const whoisFunction = require('../functions/whoisFunction')
 const digFunction = require('../functions/digFunction')
+const dnscode = require('../data/dnsstatus.json')
+
 
 const express = require('express');
 const { send } = require('express/lib/response');
+const { response } = require('express')
 const router = express.Router()
 
 // Favicon
 router.get('/favicon.ico', (req, res) => res.status(204));
 
 // Read
+
 router.get('/:domain?/:type?', async (req, res) => {
 
     if (req.params.domain.includes(".br"))
@@ -20,12 +24,10 @@ router.get('/:domain?/:type?', async (req, res) => {
         try {
 
             const { domain } = req.params
+            const type = "ANY"
 
-            const resWhois = await whoisFunction(domain)
-
-            const resDig = await digFunction(resWhois.nameservers[0], domain, (response) => {
-
-                response = response.split(' ')
+            const resDig = await digFunction(type, domain, (response) => {
+ 
                 return res.status(400).send({ response: response })
 
             })
@@ -40,17 +42,11 @@ router.get('/:domain?/:type?', async (req, res) => {
         try {
 
             const { domain } = req.params
+            const type = "NS"
 
-            const resWhois = await whoisFunction(domain)
+            const resDig = await digFunction(type, domain, (response) => {
 
-            const resDig = await digFunction(resWhois.nameservers[0], domain, (response) => {
-
-                response = response.split(' ')
-                const status = response.indexOf("status:")
-
-                response[status + 1] = response[status + 1].replace(',', '')
-
-                return res.status(400).send({ response: response[status + 1] })
+                return res.status(400).send({ response: response })
 
             })
 

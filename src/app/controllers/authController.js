@@ -55,6 +55,7 @@ router.post('/authenticate', async (req, res) => {
         return res.status(400).send({ error: 'Invalid password' })
     }
 
+    console.log("Authenticated!")
     user.password = undefined
 
     res.send({

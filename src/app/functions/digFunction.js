@@ -1,27 +1,21 @@
-const dig = require('dns')
-const { exec } = require('child_process')
-const { stat } = require('fs')
+const https = require('https')
+const dnsServer = 'https://dns.google/'
 
-function digFunction(ns, domain, callback) {
-
+function digFunction(type, domain, callback) {
+    
     try {
 
-        let command = "dig @"
-        command += ns + " " + domain
+        https.get(`${dnsServer}/resolve?name=${domain}&type=${type}&cd=true`, (ans) => {
 
-        exec(command, (error, stdout, stderr) => {
-            if (error) {
-                console.log(`error: ${error.message}`);
-                return;
-            }
-            if (stderr) {
-                console.log(`stderr: ${stderr}`);
-                return;
-            } 
+            let data = '';
+            ans.on('data', (chunk) => {
+                data += chunk
+            })
             
-            callback(stdout)
-        });
-        
+            ans.on('end', () => {
+                callback(JSON.parse(data))
+            })
+        })
 
     } catch (err) {
         console.log(err)
