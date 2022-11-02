@@ -7,14 +7,21 @@ function digFunction(type, domain, callback) {
 
         https.get(`${dnsServer}/resolve?name=${domain}&type=${type}&cd=true`, (ans) => {
 
-            let data = '';
-            ans.on('data', (chunk) => {
-                data += chunk
-            })
-            
-            ans.on('end', () => {
-                callback(JSON.parse(data))
-            })
+            if (ans.statusCode != 200){
+                callback(ans.statusCode)
+
+            } else {
+   
+                let data = '';
+                
+                ans.on('data', (chunk) => {
+                    data += chunk
+                })
+                
+                ans.on('end', () => {
+                    callback(JSON.parse(data))
+                })
+            }
         })
 
     } catch (err) {
