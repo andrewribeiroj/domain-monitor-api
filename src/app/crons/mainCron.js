@@ -6,6 +6,7 @@ const mysqlAddProperty = require('../functions/mysqlAddProperty')
 const mysqlAddRelationship = require('../functions/mysqlAddRelationship')
 
 const Notification = require('../models/Notification')
+const Status = require('../models/Status')
 
 async function mainCron() {
 
@@ -20,22 +21,25 @@ async function mainCron() {
 
             var available = await checkAvailability(element, result)
 
-            if (available === true) {
-                mysqlAddDomain(element, result, 1)
+            if(available === true){
+                console.log(element.domain + ' is available')
+            }else {
+                console.log(element.domain + ' is registered')
             }
-            else {
-                await mysqlAddDomain(element, result)
-                
-                await mysqlAddProperty(result.statuses, 'statuses', 'status')
-                await mysqlAddProperty(result.nameservers, 'nameservers', 'nameserver')
+            
+            if (available === false) {
 
-                await mysqlAddRelationship(element, result.statuses, 'statuses', 'domain_status')
-                await mysqlAddRelationship(element, result.nameservers, 'nameservers', 'domain_nameserver')
+                const status = await Status.create({ 
+                    domain: element._id,
+                    registrar: result.registrar,
+                    registrationDate: result.expirationDate,
+                    statuses: result.statuses,
+                    nameservers: result.nameservers
+                })
+
+                console.log(status)
             }
-
         })
-
-        //console.log('Cycle ', new Date())
 
     } catch (err) {
         console.log(err)
@@ -43,6 +47,6 @@ async function mainCron() {
 
 }
 
-module.exports = cron.schedule('0 */5 * * * *', mainCron, {
+module.exports = cron.schedule('0 * * * * *', mainCron, {
     scheduled: false
 })

@@ -52,7 +52,8 @@ router.get('/:domain?/:fulldata?', async (req, res) => {
                     registrationDate,
                     expirationDate,
                     statuses,
-                    nameservers
+                    nameservers,
+                    dnnssec
                 } = await whoisFunction(domain)
 
             return res.send({
@@ -62,7 +63,8 @@ router.get('/:domain?/:fulldata?', async (req, res) => {
                 registrationDate,
                 expirationDate,
                 statuses,
-                nameservers
+                nameservers,
+                dnnssec
             })
         } catch (err) {
             console.log(err)
