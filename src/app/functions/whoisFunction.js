@@ -6,7 +6,7 @@ async function whoisFunction(domain, callback) {
         if (typeof domain === 'undefined')
             return ({ error: 'No domain received' })
 
-        if (domain.includes(".com.br"))
+        if (domain.includes(".br"))
             return ({ error: 'TLD is not supported' })
 
         //console.log(`Analyzing ${domain}`)
@@ -46,11 +46,11 @@ async function whoisFunction(domain, callback) {
         return ({
             domain,
             message: 'Currently registered',
-            availability: false,
+            //availability: false,
             registrar: resWhois[0].data.registrar,
             registrationDate: resWhois[0].data.creationDate.replace(/T/, ' ').replace(/\..+/, ''),
             expirationDate: resWhois[0].data.registryExpiryDate.replace(/T/, ' ').replace(/\..+/, ''),
-            statuses: domainStatuses,
+            status: domainStatuses,
             nameservers: nameservers,
             dnnssec: resWhois[0].data.dnssec
         })
