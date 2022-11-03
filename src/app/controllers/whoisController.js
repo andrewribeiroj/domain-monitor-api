@@ -11,8 +11,8 @@ const router = express.Router()
 router.get('/favicon.ico', (req, res) => res.status(204));
 
 // Read
-router.get('/:domain?/:fulldata?', async (req, res) => {
-    if (req.params.fulldata === 'fulldata') {
+router.get('/:domain?/:type?', async (req, res) => {
+    if (req.params.type === 'fulldata') {
 
         try {
 
